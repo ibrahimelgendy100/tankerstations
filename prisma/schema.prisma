@@ -1,0 +1,385 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Addresses {
+  Id              Int      @id(map: "PK_Addresses") @default(autoincrement())
+  Latitude        Float
+  Longitude       Float
+  City            String?
+  County          String?
+  StateDistrict   String?
+  State           String?
+  ISO3166_2_Lvl4  String?
+  Postcode        String?
+  Country         String?
+  CountryCode     String?
+  CreationDate    DateTime @default(dbgenerated("'-infinity'::timestamp with time zone")) @db.Timestamptz(6)
+  LastUpdatedDate DateTime @default(dbgenerated("'-infinity'::timestamp with time zone")) @db.Timestamptz(6)
+  RecordStatus    Int      @default(0) @db.SmallInt
+}
+
+model AppConfigs {
+  Id                     Int       @id(map: "PK_AppConfigs") @default(autoincrement())
+  SupportWANumber        String?
+  SupportWAMessage       String?
+  SupportWAMessageAr     String?
+  SplashHeader           String?
+  SplashBody             String?
+  ShareAppLinkAndroid    String?
+  ShareAppLinkIOS        String?
+  StaticMapApiKey        String?
+  MapDistanceApiKey      String?
+  MapPlacesApiKey        String?
+  MapGeocodingApiKey     String?
+  MapKeyDirectionsApiKey String?
+  MapDefaultPointLoad    String?
+  AboutUs                String?
+  Terms                  String?
+  Privacy                String?
+  DateUpdated            DateTime? @db.Timestamptz(6)
+  CreationDate           DateTime  @db.Timestamptz(6)
+  LastUpdatedDate        DateTime  @db.Timestamptz(6)
+  RecordStatus           Int       @db.SmallInt
+}
+
+model AppSettings {
+  Id              Int      @id(map: "PK_AppSettings") @default(autoincrement())
+  Key             Int      @db.SmallInt
+  Value           String?
+  ValueAr         String?
+  CreationDate    DateTime @db.Timestamptz(6)
+  LastUpdatedDate DateTime @db.Timestamptz(6)
+  RecordStatus    Int      @db.SmallInt
+}
+
+model AspNetRoleClaims {
+  Id          Int         @id(map: "PK_AspNetRoleClaims") @default(autoincrement())
+  RoleId      String
+  ClaimType   String?
+  ClaimValue  String?
+  AspNetRoles AspNetRoles @relation(fields: [RoleId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetRoleClaims_AspNetRoles_RoleId")
+
+  @@index([RoleId], map: "IX_AspNetRoleClaims_RoleId")
+}
+
+model AspNetRoles {
+  Id               String             @id(map: "PK_AspNetRoles")
+  Name             String?            @db.VarChar(256)
+  NormalizedName   String?            @unique(map: "RoleNameIndex") @db.VarChar(256)
+  ConcurrencyStamp String?
+  AspNetRoleClaims AspNetRoleClaims[]
+  AspNetUserRoles  AspNetUserRoles[]
+}
+
+model AspNetUserClaims {
+  Id          Int         @id(map: "PK_AspNetUserClaims") @default(autoincrement())
+  UserId      String
+  ClaimType   String?
+  ClaimValue  String?
+  AspNetUsers AspNetUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserClaims_AspNetUsers_UserId")
+
+  @@index([UserId], map: "IX_AspNetUserClaims_UserId")
+}
+
+model AspNetUserLogins {
+  LoginProvider       String
+  ProviderKey         String
+  ProviderDisplayName String?
+  UserId              String
+  AspNetUsers         AspNetUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserLogins_AspNetUsers_UserId")
+
+  @@id([LoginProvider, ProviderKey], map: "PK_AspNetUserLogins")
+  @@index([UserId], map: "IX_AspNetUserLogins_UserId")
+}
+
+model AspNetUserRoles {
+  UserId      String
+  RoleId      String
+  AspNetRoles AspNetRoles @relation(fields: [RoleId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserRoles_AspNetRoles_RoleId")
+  AspNetUsers AspNetUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserRoles_AspNetUsers_UserId")
+
+  @@id([UserId, RoleId], map: "PK_AspNetUserRoles")
+  @@index([RoleId], map: "IX_AspNetUserRoles_RoleId")
+}
+
+model AspNetUserTokens {
+  UserId        String
+  LoginProvider String
+  Name          String
+  Value         String?
+  AspNetUsers   AspNetUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserTokens_AspNetUsers_UserId")
+
+  @@id([UserId, LoginProvider, Name], map: "PK_AspNetUserTokens")
+}
+
+model AspNetUsers {
+  Id                      String             @id(map: "PK_AspNetUsers")
+  FirstName               String?
+  LastName                String?
+  DisplayName             String?
+  SocialLoginId           String?
+  ForgetPasswordCode      String?
+  ActivationCode          String?
+  CivilID                 String?
+  NFCID                   String?
+  LicenseID               String?
+  NotificationToken       String?
+  NationalityId           Int
+  BirthDate               DateTime           @db.Timestamptz(6)
+  Status                  Int                @db.SmallInt
+  ImageUser               String?
+  ImageLicense            String?
+  ImageCivilID            String?
+  ServiceAgreementBalance Float
+  ServiceAgreementType    Int                @db.SmallInt
+  ServiceAgreementStatus  Int                @db.SmallInt
+  UserName                String?            @db.VarChar(256)
+  NormalizedUserName      String?            @unique(map: "UserNameIndex") @db.VarChar(256)
+  Email                   String?            @db.VarChar(256)
+  NormalizedEmail         String?            @db.VarChar(256)
+  EmailConfirmed          Boolean
+  PasswordHash            String?
+  SecurityStamp           String?
+  ConcurrencyStamp        String?
+  PhoneNumber             String?
+  PhoneNumberConfirmed    Boolean
+  TwoFactorEnabled        Boolean
+  LockoutEnd              DateTime?          @db.Timestamptz(6)
+  LockoutEnabled          Boolean
+  AccessFailedCount       Int
+  DateAdded               DateTime           @default(dbgenerated("'-infinity'::timestamp with time zone")) @db.Timestamptz(6)
+  RecordStatus            Int                @default(0) @db.SmallInt
+  AspNetUserClaims        AspNetUserClaims[]
+  AspNetUserLogins        AspNetUserLogins[]
+  AspNetUserRoles         AspNetUserRoles[]
+  AspNetUserTokens        AspNetUserTokens[]
+  FillingStations         FillingStations[]
+  Inventories             Inventories[]
+  Invoices                Invoices[]
+  NFCMasters              NFCMasters[]
+  RefreshToken            RefreshToken[]
+  TripsLogs               TripsLogs[]
+  Vehicles                Vehicles[]
+
+  @@index([NormalizedEmail], map: "EmailIndex")
+}
+
+model Banners {
+  Id              Int      @id(map: "PK_Banners") @default(autoincrement())
+  Txt             String?
+  TxtAr           String?
+  Img             String?
+  Link            String?
+  AppConfigId     Int?
+  CreationDate    DateTime @db.Timestamptz(6)
+  LastUpdatedDate DateTime @db.Timestamptz(6)
+  RecordStatus    Int      @db.SmallInt
+
+  @@index([AppConfigId], map: "IX_Banners_AppConfigId")
+}
+
+model FillingStations {
+  Id                   Int          @id(map: "PK_FillingStations") @default(autoincrement())
+  StationName          String?
+  Capacity             Float
+  NumberOfBays         Int
+  UnitPrice            Int
+  NumOfAvailableBays   Int
+  MaxWatingPerBay      Int
+  NumOfMaintenanceBays Int
+  UserId               String?
+  CreationDate         DateTime     @db.Timestamptz(6)
+  LastUpdatedDate      DateTime     @db.Timestamptz(6)
+  RecordStatus         Int          @db.SmallInt
+  AddressId            Int?         @unique(map: "IX_FillingStations_AddressId")
+  AspNetUsers          AspNetUsers? @relation(fields: [UserId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_FillingStations_AspNetUsers_UserId")
+
+  @@index([UserId], map: "IX_FillingStations_UserId")
+}
+
+model Inventories {
+  Id               Int          @id(map: "PK_Inventories") @default(autoincrement())
+  FillingStationId Int
+  UserID           String?
+  VehicleId        Int
+  ImperialGallons  Float
+  CreationDate     DateTime     @db.Timestamptz(6)
+  LastUpdatedDate  DateTime     @db.Timestamptz(6)
+  RecordStatus     Int          @db.SmallInt
+  AspNetUsers      AspNetUsers? @relation(fields: [UserID], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Inventories_AspNetUsers_UserID")
+
+  @@index([FillingStationId], map: "IX_Inventories_FillingStationId")
+  @@index([UserID], map: "IX_Inventories_UserID")
+  @@index([VehicleId], map: "IX_Inventories_VehicleId")
+}
+
+model InvoiceItems {
+  Id              Int      @id(map: "PK_InvoiceItems") @default(autoincrement())
+  InvoiceId       Int
+  Description     String?
+  Quantity        Float
+  UnitPrice       Float
+  TotalPrice      Float
+  CreationDate    DateTime @db.Timestamptz(6)
+  LastUpdatedDate DateTime @db.Timestamptz(6)
+  RecordStatus    Int      @db.SmallInt
+
+  @@index([InvoiceId], map: "IX_InvoiceItems_InvoiceId")
+}
+
+model Invoices {
+  Id                   Int          @id(map: "PK_Invoices") @default(autoincrement())
+  InvoiceSerial        Int
+  FillingStationId     Int
+  UserID               String?
+  VehicleId            Int
+  InventoryId          Int
+  SumTotalOfBill       Float
+  ServiceAgreementType Int          @db.SmallInt
+  PaymentType          Int
+  PaymentStatus        Int
+  TransactionDetails   String?
+  TaxAmount            Float
+  Notes                String?
+  CreationDate         DateTime     @db.Timestamptz(6)
+  LastUpdatedDate      DateTime     @db.Timestamptz(6)
+  RecordStatus         Int          @db.SmallInt
+  AspNetUsers          AspNetUsers? @relation(fields: [UserID], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Invoices_AspNetUsers_UserID")
+
+  @@index([FillingStationId], map: "IX_Invoices_FillingStationId")
+  @@index([InventoryId], map: "IX_Invoices_InventoryId")
+  @@index([UserID], map: "IX_Invoices_UserID")
+  @@index([VehicleId], map: "IX_Invoices_VehicleId")
+}
+
+model NFCMasters {
+  Id                     Int          @id(map: "PK_NFCMasters") @default(autoincrement())
+  UserId                 String?
+  NFCID                  String?      @unique(map: "IX_NFCMasters_NFCID")
+  ServiceAgreementType   Int          @db.SmallInt
+  ServiceAgreementStatus Int          @db.SmallInt
+  CardStatus             Int          @db.SmallInt
+  Balance                Float
+  MaxAllowedSpend        Int
+  CreationDate           DateTime     @db.Timestamptz(6)
+  LastUpdatedDate        DateTime     @db.Timestamptz(6)
+  RecordStatus           Int          @db.SmallInt
+  AspNetUsers            AspNetUsers? @relation(fields: [UserId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_NFCMasters_AspNetUsers_UserId")
+
+  @@index([UserId], map: "IX_NFCMasters_UserId")
+}
+
+model RefreshToken {
+  AppUserId   String
+  Id          Int         @default(autoincrement())
+  Token       String
+  ExpiresOn   DateTime    @db.Timestamptz(6)
+  CreatedOn   DateTime    @db.Timestamptz(6)
+  RevokedOn   DateTime?   @db.Timestamptz(6)
+  AspNetUsers AspNetUsers @relation(fields: [AppUserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_RefreshToken_AspNetUsers_AppUserId")
+
+  @@id([AppUserId, Id], map: "PK_RefreshToken")
+}
+
+model StationBays {
+  Id               Int      @id(map: "PK_StationBays") @default(autoincrement())
+  BayName          String?
+  FillingStationId Int
+  BayStatus        Int      @db.SmallInt
+  TrafficSignal    Int      @db.SmallInt
+  BayActive        Int      @db.SmallInt
+  Maintenance      Boolean
+  FlowRate         Float
+  FlowTotalizer    Float
+  TotalWorkHours   Float
+  WorkStartTime    DateTime @db.Timestamptz(6)
+  WorkEndTime      DateTime @db.Timestamptz(6)
+  CreationDate     DateTime @db.Timestamptz(6)
+  LastUpdatedDate  DateTime @db.Timestamptz(6)
+  RecordStatus     Int      @db.SmallInt
+
+  @@index([FillingStationId], map: "IX_StationBays_FillingStationId")
+}
+
+model Stories {
+  Id              Int      @id(map: "PK_Stories") @default(autoincrement())
+  Url             String?
+  Asset           String?
+  Text            String?
+  Type            Int      @db.SmallInt
+  CaptionTxt      String?
+  AppConfigId     Int?
+  CreationDate    DateTime @db.Timestamptz(6)
+  LastUpdatedDate DateTime @db.Timestamptz(6)
+  RecordStatus    Int      @db.SmallInt
+  Duration        Int?
+
+  @@index([AppConfigId], map: "IX_Stories_AppConfigId")
+}
+
+model TripsLogs {
+  Id               Int          @id(map: "PK_TripsLogs") @default(autoincrement())
+  FillingStationId Int
+  StationBayId     Int
+  UserID           String?
+  VehicleId        Int
+  ArrivalDate      DateTime     @db.Timestamptz(6)
+  DepartDate       DateTime     @db.Timestamptz(6)
+  CreationDate     DateTime     @db.Timestamptz(6)
+  LastUpdatedDate  DateTime     @db.Timestamptz(6)
+  RecordStatus     Int          @db.SmallInt
+  AspNetUsers      AspNetUsers? @relation(fields: [UserID], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_TripsLogs_AspNetUsers_UserID")
+
+  @@index([FillingStationId], map: "IX_TripsLogs_FillingStationId")
+  @@index([StationBayId], map: "IX_TripsLogs_StationBayId")
+  @@index([UserID], map: "IX_TripsLogs_UserID")
+  @@index([VehicleId], map: "IX_TripsLogs_VehicleId")
+}
+
+model Vehicles {
+  Id                         Int          @id(map: "PK_Vehicles") @default(autoincrement())
+  RFID                       String       @unique(map: "IX_Vehicles_RFID")
+  PlateNumber                String
+  LicenseID                  String
+  ImageLicense               String?
+  Type                       String?
+  Model                      String?
+  ExpiryDate                 DateTime     @db.Timestamptz(6)
+  LabCertificationExpiryDate DateTime     @db.Timestamptz(6)
+  Capacity                   Float
+  NumberOfTripsAllowedPerDay Float
+  UserId                     String?
+  CreationDate               DateTime     @db.Timestamptz(6)
+  LastUpdatedDate            DateTime     @db.Timestamptz(6)
+  RecordStatus               Int          @db.SmallInt
+  Brand                      String?
+  Color                      String?
+  AspNetUsers                AspNetUsers? @relation(fields: [UserId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Vehicles_AspNetUsers_UserId")
+
+  @@index([UserId], map: "IX_Vehicles_UserId")
+}
+
+model WorkSessions {
+  Id              Int       @id(map: "PK_WorkSessions") @default(autoincrement())
+  StartTime       DateTime  @db.Timestamptz(6)
+  EndTime         DateTime? @db.Timestamptz(6)
+  StationBayId    Int?
+  CreationDate    DateTime  @db.Timestamptz(6)
+  LastUpdatedDate DateTime  @db.Timestamptz(6)
+  RecordStatus    Int       @db.SmallInt
+
+  @@index([StationBayId], map: "IX_WorkSessions_StationBayId")
+}
+
+model EFMigrationsHistory {
+  MigrationId    String @id(map: "PK___EFMigrationsHistory") @db.VarChar(150)
+  ProductVersion String @db.VarChar(32)
+
+  @@map("__EFMigrationsHistory")
+}
